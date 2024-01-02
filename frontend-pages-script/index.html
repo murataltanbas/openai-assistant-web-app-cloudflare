@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assistant</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Assistant</h1>
+    <input type="text" id="userQuery" placeholder="Ask me anything..." />
+    <button id="searchButton">Ask</button>
+    <div id="response"></div>
+
+    <script>
+      const searchButton = document.getElementById("searchButton");
+      const userQueryInput = document.getElementById("userQuery");
+      const responseDiv = document.getElementById("response");
+
+      searchButton.addEventListener("click", async () => {
+        const userQuery = userQueryInput.value;
+
+        try {
+          const response = await fetch(
+            " ", // Provide your workers endpoint URL
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ userQuery }),
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+
+          const data = await response.text(); // Parse the response as text
+
+          // Display the response directly without joining with <br> tags
+          responseDiv.innerHTML = data;
+        } catch (error) {
+          console.error("Error communicating with the OpenAI Assistant", error);
+          responseDiv.innerHTML =
+            "Failed to get a response from the assistant.";
+        }
+      });
+    </script>
+  </body>
+</html>
